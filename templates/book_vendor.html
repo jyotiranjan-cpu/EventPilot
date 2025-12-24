@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request Quote - EventPilot</title>
+    <!-- Using the standard auth.css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Flash Messages (Success/Error) -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div id="snackbar" class="{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="auth-container" style="max-width: 650px;">
+        
+        <!-- Header -->
+        <div class="auth-header">
+            <h2>Request Quote</h2>
+            <p style="color: #666;">
+                Inquiry for <strong style="color: #FF6B00; font-size: 1.1rem;">{{ vendor.business_name }}</strong>
+            </p>
+        </div>
+
+        <!-- Booking Form -->
+        <form action="{{ url_for('request_booking', vendor_id=vendor.id) }}" method="POST" class="auth-form">
+            
+            <!-- Row 1: Date & Budget -->
+            <div class="row">
+                <div class="input-group half">
+                    <label><i class="far fa-calendar-alt"></i> Event Date</label>
+                    <!-- min attribute prevents past dates -->
+                    <input type="date" name="event_date" required min="{{ today_date }}">
+                </div>
+                <div class="input-group half">
+                    <label><i class="fas fa-rupee-sign"></i> Your Budget</label>
+                    <input type="number" name="user_request_price" placeholder="e.g. 25000" required>
+                </div>
+            </div>
+
+            <!-- Row 2: Time Slots -->
+            <div class="row">
+                <div class="input-group half">
+                    <label><i class="far fa-clock"></i> Start Time</label>
+                    <input type="time" name="start_time" required>
+                </div>
+                <div class="input-group half">
+                    <label><i class="far fa-clock"></i> End Time</label>
+                    <input type="time" name="end_time" required>
+                </div>
+            </div>
+
+            <!-- Row 3: Event Type & Contact -->
+            <div class="row">
+                <div class="input-group half">
+                    <label>Event Type</label>
+                    <select name="event_type" class="styled-select" required>
+                        <option value="" disabled selected>Select Type</option>
+                        <option value="Wedding">Wedding</option>
+                        <option value="Birthday">Birthday Party</option>
+                        <option value="Corporate">Corporate Event</option>
+                        <option value="Engagement">Engagement</option>
+                        <option value="Anniversary">Anniversary</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group half">
+                    <label>Onsite Contact Name</label>
+                    <input type="text" name="onsite_contact" placeholder="Name & Phone (e.g. Rahul)" required>
+                </div>
+            </div>
+
+            <!-- Row 4: Specific Requirements -->
+            <div class="input-group">
+                <label>Specific Requirements / Message</label>
+                <textarea name="specific_requirements" rows="5" placeholder="Describe your event needs (e.g. Number of guests, food preferences, color theme, special requests)..."></textarea>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="submit-btn">
+                Send Quote Request <i class="fas fa-paper-plane" style="margin-left:8px;"></i>
+            </button>
+        </form>
+
+        <!-- Cancel Link -->
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('vendor_list') }}" style="color: #666; text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Cancel & Go Back
+            </a>
+        </div>
+    </div>
+
+    <!-- JS for Snackbar animation -->
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

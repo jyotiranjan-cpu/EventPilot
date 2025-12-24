@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Vendors - EventPilot</title>
+    <!-- CSS Links -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='vendors.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- 1. PROFESSIONAL NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">Event<span class="highlight">Pilot</span></a>
+            
+            <ul class="nav-links">
+                <!-- Logic: If logged in, show Profile. If not, show Login. -->
+                {% if session.get('id') %}
+                    <li><a href="/" class="nav-item">Dashboard</a></li>
+                    <li><a href="/logout" class="btn-outline">Logout</a></li>
+                {% else %}
+                    <li><a href="/" class="nav-item">Home</a></li>
+                    <li><a href="/login" class="btn-outline">Login</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 2. HERO SECTION (Dark Background) -->
+    <header class="market-header">
+        <div class="header-content">
+            <h1>Find Local Professionals</h1>
+            <p>Browse verified vendors for your next big event</p>
+        </div>
+    </header>
+
+    <!-- 3. FLOATING SEARCH BAR -->
+    <div class="search-container-wrapper">
+        <form action="{{ url_for('vendor_list') }}" method="GET" class="search-card">
+            
+            <!-- Category Dropdown -->
+            <div class="search-group">
+                <i class="fas fa-th-large icon"></i>
+                <div class="input-wrapper">
+                    <label>Category</label>
+                    <select name="category" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        <option value="Catering" {% if current_category == 'Catering' %}selected{% endif %}>Catering</option>
+                        <option value="Photography" {% if current_category == 'Photography' %}selected{% endif %}>Photography</option>
+                        <option value="Decoration" {% if current_category == 'Decoration' %}selected{% endif %}>Decoration</option>
+                        <option value="DJ/Music" {% if current_category == 'DJ/Music' %}selected{% endif %}>DJ/Music</option>
+                        <option value="Venue" {% if current_category == 'Venue' %}selected{% endif %}>Venue</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="divider-vertical"></div>
+
+            <!-- City Input -->
+            <div class="search-group">
+                <i class="fas fa-map-marker-alt icon"></i>
+                <div class="input-wrapper">
+                    <label>City / Location</label>
+                    <input type="text" name="city" placeholder="e.g. Balasore" value="{{ current_city }}">
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-group">
+                <button type="submit" class="btn-search">Search</button>
+                
+                {% if current_category or current_city %}
+                    <a href="{{ url_for('vendor_list') }}" class="btn-clear" title="Clear Filters">
+                        <i class="fas fa-times"></i>
+                    </a>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+
+    <!-- 4. RESULTS GRID -->
+    <div class="results-container">
+        
+        <div class="results-header">
+            <h3>{{ vendors|length }} Result(s) Found</h3>
+        </div>
+
+        <div class="vendor-grid">
+            {% for vendor in vendors %}
+            <!-- VENDOR CARD -->
+            <div class="vendor-card">
+                <div class="card-image">
+                    <!-- Placeholder color block with Icon -->
+                    <div class="img-placeholder {{ vendor.category|lower }}">
+                        <i class="fas fa-store"></i>
+                    </div>
+                    <span class="category-tag">{{ vendor.category }}</span>
+                </div>
+                
+                <div class="card-body">
+                    <div class="card-info">
+                        <h3>{{ vendor.business_name }}</h3>
+                        <p class="location"><i class="fas fa-map-marker-alt"></i> {{ vendor.city }}</p>
+                        
+                        <div class="price-row">
+                            <span>Starting from</span>
+                            <strong>₹{{ vendor.starting_price }}</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="card-actions">
+                        {% if session.get('id') %}
+                            <!-- If Logged In: Go to Details -->
+                            <a href="{{ url_for('vendor_details', id=vendor.id) }}" class="btn-view">View Profile</a>
+                        {% else %}
+                            <!-- If NOT Logged In: Go to Login with a message -->
+                            <a href="{{ url_for('login') }}" class="btn-view" onclick="alert('You must login to view vendor profiles.')">Login to View</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% else %}
+            
+            <!-- 5. EMPTY STATE (Better UI) -->
+            <div class="empty-state">
+                <div class="empty-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>No vendors found</h3>
+                <p>We couldn't find any vendors matching "<strong>{{ current_city }}</strong>" in <strong>{{ current_category or 'All Categories' }}</strong>.</p>
+                <a href="{{ url_for('vendor_list') }}" class="btn-reset">Clear All Filters</a>
+            </div>
+
+            {% endfor %}
+        </div>
+    </div>
+
+</body>
+</html>

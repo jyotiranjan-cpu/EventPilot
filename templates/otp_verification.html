@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    
+    <style>
+        .resend-container {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .timer-text {
+            color: #FF6B00;
+            font-weight: bold;
+        }
+        
+        /* Style the button to look like a text link */
+        .link-button {
+            background: none;
+            border: none;
+            color: #FF6B00;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: bold;
+            padding: 0;
+            font-family: inherit;
+            font-size: inherit;
+        }
+        .link-button:hover {
+            color: #e66000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="auth-container">
+        <div class="auth-header">
+            <h2>OTP Verification</h2>
+            <p>Enter the OTP sent to <strong>{{ email }}</strong></p>
+        </div>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, msg in messages %}
+                    <div id="snackbar" class="{{ category }}">{{ msg }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!-- Main Verification Form -->
+        <form action="{{ url_for('otp_verification') }}" method="POST" class="auth-form">
+            <div class="input-group">
+                <label>Enter OTP</label>
+                <input type="text" name="otp" placeholder="6-digit code" maxlength="6" required autocomplete="off">
+            </div>
+            <!-- Hidden email for Verification -->
+            <input type="hidden" name="email" value="{{ email }}">
+            <button type="submit" class="submit-btn">Verify</button>
+        </form>
+
+        <!-- RESEND SECTION -->
+        <div class="resend-container">
+            
+            <!-- 1. Countdown Message -->
+            <span id="countdown-box">
+                Resend code in <span id="timer" class="timer-text">30</span>s
+            </span>
+
+            <!-- 2. Hidden Form for Resend (POST) -->
+            <form action="{{ url_for('resend_otp') }}" method="POST" id="resend-form" style="display: none;">
+                <!-- The Hidden Input you requested -->
+                <input type="hidden" name="email" value="{{ email }}">
+                
+                <!-- This button submits the form but looks like a link -->
+                <button type="submit" class="link-button">Resend OTP</button>
+            </form>
+
+        </div>
+        
+        <div style="text-align: center; margin-top: 20px;">
+             <a href="{{ url_for('email_verification') }}" style="color: #666; font-size: 0.8rem;">Change Email</a>
+        </div>
+    </div>
+
+    <!-- JavaScript for Timer -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let timeLeft = 30; // Seconds
+            const timerDisplay = document.getElementById('timer');
+            const countdownBox = document.getElementById('countdown-box');
+            const resendForm = document.getElementById('resend-form');
+
+            const interval = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    // Hide timer text
+                    countdownBox.style.display = 'none';
+                    // Show the Resend Form (which contains the button)
+                    resendForm.style.display = 'block';
+                } else {
+                    timerDisplay.textContent = timeLeft;
+                    timeLeft -= 1;
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPilot - Login & Register</title>
+    <link rel="stylesheet" href="static/auth.css">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+      <!-- Snackbar -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        {% if loop.first %}
+          <div id="snackbar" class="{{ category }}">{{ msg }}</div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <!-- keep an element present so JS can safely query it -->
+      <div id="snackbar" style="display:none;"></div>
+    {% endif %}
+  {% endwith %}
+
+
+    <div class="auth-container">
+        <!-- Header / Toggle -->
+        <div class="auth-header">
+            <h2>Welcome to <span class="brand">EventPilot</span></h2>
+            <div class="toggle-box">
+                <button id="btn-login" class="toggle-btn active" onclick="switchForm('login')">Login</button>
+                <button id="btn-register" class="toggle-btn" onclick="switchForm('register')">Register</button>
+            </div>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="auth-form" action="/login" method="POST">
+            <!-- Inside the Register Form -->
+            <div class="input-group">
+                <label>Email Address</label>
+                <!-- Use 'readonly' and apply a grey background style -->
+                <input type="email" id="email" name="email" value="{{ email }}" readonly style="background-color: #e9ecef; cursor: not-allowed;">
+                <small class="error-msg">Verified</small>
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" name="password" placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="submit-btn">Log In</button>
+            <p class="forgot-pass">Forgot Password?</p>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="register-form" class="auth-form hidden" action="/register" method="POST" novalidate>
+            
+            <!-- Role Selection -->
+            <div class="role-selection">
+                <label>I want to:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="role" value="user" checked onchange="toggleVendorFields()">
+                        <span>Plan an Event</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="role" value="vendor" onchange="toggleVendorFields()">
+                        <span>Offer Services (Vendor)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Common Fields (User & Vendor) -->
+            <div class="row">
+                <div class="input-group half">
+                    <label>First Name</label>
+                    <input type="text" id="firstname" name="firstname">
+                    <small class="error-msg">Name is required</small>
+                </div>
+                <div class="input-group half">
+                    <label>Last Name</label>
+                    <input type="text" id="lastname" name="lastname">
+                    <small class="error-msg">Last name is required</small>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" id="email" name="email">
+                <small class="error-msg">Enter a valid email</small>
+            </div>
+
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" name="phone_no" placeholder="+91 98765 43210">
+                <small class="error-msg">Enter a valid 10-digit phone number</small>
+            </div>
+
+            <div class="row">
+                <div class="input-group half">
+                    <label>State</label>
+                    <input type="text" id="state" name="state">
+                </div>
+                <div class="input-group half">
+                    <label>City</label>
+                    <input type="text" id="city" name="city">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Address</label>
+                <textarea name="address" rows="2"></textarea>
+            </div>
+
+            <!-- VENDOR SPECIFIC FIELDS (Hidden by default) -->
+            <div id="vendor-fields" class="vendor-section hidden-section">
+                <h4 class="divider"><span>Business Details</span></h4>
+                
+                <div class="input-group">
+                    <label>Business Name</label>
+                    <input type="text" id="business_name" name="business_name">
+                    <small class="error-msg">Business Name is required</small>
+                </div>
+
+                <div class="row">
+                    <div class="input-group half">
+                        <label>Category</label>
+                        <select name="category" id="category">
+                            <option value="">Select Category</option>
+                            <option value="Catering">Catering</option>
+                            <option value="Photography">Photography</option>
+                            <option value="Decoration">Decoration</option>
+                            <option value="DJ/Music">DJ/Music</option>
+                            <option value="Venue">Venue</option>
+                        </select>
+                    </div>
+                    <div class="input-group half">
+                        <label>Starting Price (₹)</label>
+                        <input type="number" id="price" name="starting_price" placeholder="e.g. 5000">
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea name="description" rows="3" placeholder="Describe your services..."></textarea>
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="password" name="password_hash"> <!-- using password_hash name to match logic later -->
+                <small class="error-msg">At least 6 chars, 1 number</small>
+            </div>
+            
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <input type="password" id="confirm_password">
+                <small class="error-msg">Passwords do not match</small>
+            </div>
+
+            <button type="submit" class="submit-btn" id="reg-btn" disabled>Register</button>
+        </form>
+    </div>
+
+    <script src="static/auth.js"></script>
+</body>
+</html>

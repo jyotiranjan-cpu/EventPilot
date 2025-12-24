@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Admin - EventPilot</title>
+    <!-- Reusing auth.css for the form styling -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* Specific tweak for this page */
+        .admin-badge {
+            background-color: #1F2937;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div id="snackbar" class="{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="auth-container">
+        
+        <div class="auth-header">
+            <h2>Add New Admin <span class="admin-badge">Internal</span></h2>
+            <p style="color: #666;">Create credentials for a new staff member.</p>
+        </div>
+
+        <form action="{{ url_for('add_new_admin') }}" method="POST" class="auth-form">
+            
+            <div class="input-group">
+                <label>Username</label>
+                <input type="text" name="username" placeholder="e.g. Rahul Verma" required>
+            </div>
+
+            <div class="input-group">
+                <label>Email Address</label>
+                <input type="email" name="email" placeholder="staff@eventpilot.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>Role</label>
+                <select name="role" style="padding: 10px; border: 1px solid #ccc; border-radius: 6px; width: 100%;">
+                    <option value="moderator">Moderator (Verify Vendors)</option>
+                    <option value="superadmin">Super Admin (Full Access)</option>
+                    <option value="support">Support (Read Only)</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Set Password</label>
+                <div class="password-container">
+                    <input type="password" name="password" id="admin-pass" placeholder="Create a strong password" required>
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('admin-pass', this)"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">Create Admin Account</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('admin_dashboard') }}" style="color: #666; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Reusing your Auth JS for password toggle -->
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

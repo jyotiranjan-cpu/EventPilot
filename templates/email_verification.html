@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - EventPilot</title>
+    <!-- Use the auth.css file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='email_verification.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    
+    <!-- Optional: Inline style for the message box if not in auth.css -->
+
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- Header -->
+        <div class="auth-header">
+            <h2>Register with <span class="brand">EventPilot</span></h2>
+            <p style="color: #666; margin-top:5px;">Enter your email to verify your identity</p>
+        </div>
+
+        <!-- Flash / Snackbar Messages -->
+        <!-- I combined your logic into a clean message box inside the card -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        {% if loop.first %}
+          <div id="snackbar" class="{{ category }}">{{ msg }}</div>
+        {% endif %}
+      {% endfor %}
+    {% else %}
+      <!-- keep an element present so JS can safely query it -->
+      <div id="snackbar" style="display:none;"></div>
+    {% endif %}
+  {% endwith %}
+        
+        <!-- Form -->
+        <form action="{{ url_for('email_verification') }}" method="POST" class="auth-form">
+            <div class="input-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="you@example.com" required>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submit">Send OTP</button>
+        </form>
+
+        <!-- Footer Link -->
+        <div class="bottom-link">
+            Already have an account? <a href="{{ url_for('login') }}">Sign In</a>
+        </div>
+    </div>
+
+        <!-- Optional: Add Snackbar Script if you want the pop-up effect -->
+<script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

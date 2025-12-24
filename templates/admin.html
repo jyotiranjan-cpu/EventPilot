@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin Dashboard - EventPilot</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <div class="dashboard-wrapper">
+        
+        <!-- SEMANTIC SIDEBAR -->
+        <nav class="sidebar">
+            <header class="logo-area">
+                <h2>Event<span class="highlight">Pilot</span></h2>
+                <span class="role-badge">{{ session.get('admin_role', 'Admin') | replace('_', ' ') | capitalize }}</span>
+            </header>
+
+            <ul class="menu-list">
+                <li class="nav-item">
+                    <a href="{{ url_for('homepage') }}" class="nav-link home-link">
+                        <i class="fas fa-arrow-left"></i> Back to Website
+                    </a>
+                </li>
+                
+                <li class="nav-item active" onclick="showSection('dashboard', this)">
+                    <a href="#dashboard" class="nav-link"><i class="fas fa-th-large"></i> Dashboard</a>
+                </li>
+                
+                <li class="nav-item" onclick="showSection('organizers', this)">
+                    <a href="#organizers" class="nav-link"><i class="fas fa-users"></i> Organizers</a>
+                </li>
+                
+                <li class="nav-item" onclick="showSection('vendors', this)">
+                    <a href="#vendors" class="nav-link">
+                        <i class="fas fa-store"></i> Vendors 
+                        {% if pending_vendors|length > 0 %}
+                            <span class="badge-count">{{ pending_vendors|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                
+                <li class="nav-item" onclick="showSection('bookings', this)">
+                    <a href="#bookings" class="nav-link"><i class="fas fa-calendar-check"></i> Bookings</a>
+                </li>
+                
+                <li class="divider">System Management</li>
+                
+                <li class="nav-item" onclick="showSection('admins', this)">
+                    <a href="#admins" class="nav-link"><i class="fas fa-user-shield"></i> Manage Admins</a>
+                </li>
+            </ul>
+
+            <footer class="sidebar-footer">
+                <a href="/logout" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </footer>
+        </nav>
+
+        <!-- SEMANTIC MAIN CONTENT -->
+        <main class="main-content">
+            
+            <header class="top-bar">
+                <h1 id="page-title">Dashboard Overview</h1>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name={{ session.get('name', 'Admin') }}&background=FF6B00&color=fff" alt="Profile">
+                </div>
+            </header>
+
+            <!-- SECTION 1: DASHBOARD HOME -->
+            <section id="section-dashboard" class="content-section active">
+                <div class="stats-grid">
+                    <article class="stat-card">
+                        <div class="info"><h3>Total Users</h3><h2>{{ total_users }}</h2></div>
+                        <div class="icon bg-blue"><i class="fas fa-users"></i></div>
+                    </article>
+                    <article class="stat-card">
+                        <div class="info"><h3>Verified Vendors</h3><h2>{{ vendors }}</h2></div>
+                        <div class="icon bg-orange"><i class="fas fa-store"></i></div>
+                    </article>
+                    <article class="stat-card">
+                        <div class="info"><h3>Total Bookings</h3><h2>{{ bookings }}</h2></div>
+                        <div class="icon bg-green"><i class="fas fa-check-circle"></i></div>
+                    </article>
+                    <article class="stat-card">
+                        <div class="info"><h3>Active Admins</h3><h2>{{ admins }}</h2></div>
+                        <div class="icon bg-purple"><i class="fas fa-user-shield"></i></div>
+                    </article>
+                </div>
+
+                <div class="dashboard-split">
+                    <div class="chart-box">
+                        <h3>Booking Analytics</h3>
+                        <canvas id="bookingChart"></canvas>
+                    </div>
+                    
+                    <div class="pending-box">
+                        <div class="box-header">
+                            <h3>Pending Verifications</h3>
+                            <button onclick="showSection('vendors')" class="text-btn">View All</button>
+                        </div>
+                        <div class="table-scroll">
+                            <table class="data-table">
+                                <thead><tr><th>Business</th><th>Category</th><th>Action</th></tr></thead>
+                                <tbody>
+                                    {% for vendor in pending_vendors %}
+                                    <tr>
+                                        <td><strong>{{ vendor.business_name }}</strong><br><small>{{ vendor.city }}</small></td>
+                                        <td><span class="tag">{{ vendor.category }}</span></td>
+                                        <td><a href="{{ url_for('view_vendor_detail', id=vendor.id) }}" class="icon-btn"><i class="fas fa-eye"></i></a></td>
+                                    </tr>
+                                    {% else %}
+                                    <tr><td colspan="3" class="empty-msg">No pending items</td></tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 2: ALL ORGANIZERS -->
+            <section id="section-organizers" class="content-section">
+                <div class="table-wrapper">
+                    <table class="data-table full-width">
+                        <thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Joined</th></tr></thead>
+                        <tbody>
+                            {% for user in all_users %}
+                            <tr>
+                                <td>#{{ user.id }}</td>
+                                <td><strong>{{ user.firstname }} {{ user.lastname }}</strong></td>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.phone_no }}</td>
+                                <td>{{ user.city }}</td>
+                                <td>{{ user.created_at }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION 3: ALL VENDORS -->
+            <section id="section-vendors" class="content-section">
+                <div class="table-wrapper">
+                    <table class="data-table full-width">
+                        <thead><tr><th>Business</th><th>Category</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            {% for vendor in all_vendors %}
+                            <tr>
+                                <td><strong>{{ vendor.business_name }}</strong><br><small>{{ vendor.email }}</small></td>
+                                <td>{{ vendor.category }}</td>
+                                <td>₹{{ vendor.starting_price }}</td>
+                                <td>
+                                    <span class="status-badge {{ vendor.verification_status }}">
+                                        {{ vendor.verification_status|capitalize }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="action-group">
+                                        <a href="{{ url_for('view_vendor_detail', id=vendor.id) }}" class="icon-btn view" title="View"><i class="fas fa-eye"></i></a>
+                                        {% if vendor.verification_status == 'pending' %}
+                                            <a href="{{ url_for('vendor_action', action='approve', id=vendor.id) }}" class="icon-btn check" title="Approve"><i class="fas fa-check"></i></a>
+                                            <a href="{{ url_for('vendor_action', action='reject', id=vendor.id) }}" class="icon-btn cross" title="Reject"><i class="fas fa-times"></i></a>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION 4: ALL BOOKINGS -->
+            <section id="section-bookings" class="content-section">
+                <div class="table-wrapper">
+                    <table class="data-table full-width">
+                        <thead><tr><th>Date</th><th>Organizer</th><th>Vendor</th><th>Price</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            {% for booking in all_bookings %}
+                            <tr>
+                                <td>{{ booking.event_date }}</td>
+                                <td><strong>{{ booking.user_name }}</strong><br><small>{{ booking.user_email }}</small></td>
+                                <td><strong>{{ booking.vendor_name }}</strong></td>
+                                <td>₹{{ booking.final_price if booking.final_price else booking.user_request_price }}</td>
+                                <td><span class="status-badge {{ booking.status }}">{{ booking.status }}</span></td>
+                                <td><a href="{{ url_for('view_booking_detail', id=booking.id) }}" class="icon-btn view"><i class="fas fa-eye"></i></a></td>
+                            </tr>
+                            {% else %}
+                            <tr><td colspan="6" class="empty-msg">No bookings found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- SECTION 5: MANAGE ADMINS -->
+            <section id="section-admins" class="content-section">
+                <div class="section-top">
+                    <h3>System Administrators</h3>
+                    <a href="{{ url_for('add_new_admin') }}" class="btn-primary"><i class="fas fa-plus"></i> Add New Admin</a>
+                </div>
+                <div class="table-wrapper">
+                    <table class="data-table full-width">
+                        <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Actions</th></tr></thead>
+                        <tbody>
+                            {% for admin in admin_info %}
+                            <tr>
+                                <td>
+                                    <div class="profile-row">
+                                        <img src="https://ui-avatars.com/api/?name={{ admin.username }}&background=1F2937&color=fff&size=30" class="avatar-sm">
+                                        <span>{{ admin.username }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ admin.email }}</td>
+                                <td><span class="role-tag {{ admin.role }}">{{ admin.role }}</span></td>
+                                <td>
+                                    {% if admin.id != session.get('admin_id') %}
+                                        <a href="{{ url_for('delete_admin', id=admin.id) }}" class="icon-btn cross" onclick="return confirm('Remove this admin?')"><i class="fas fa-trash"></i></a>
+                                    {% else %}
+                                        <span class="text-active">Active (You)</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- External JS for Tabs -->
+    <script src="{{ url_for('static', filename='admin.js') }}"></script>
+</body>
+</html>

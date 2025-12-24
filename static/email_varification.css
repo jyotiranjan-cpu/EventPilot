@@ -1,0 +1,31 @@
+.msg-box {
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+.msg-box.error {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fca5a5;
+}
+.msg-box.success {
+    background-color: #dcfce7;
+    color: #15803d;
+    border: 1px solid #86efac;
+}
+.bottom-link {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #666;
+}
+.bottom-link a {
+    color: #FF6B00;
+    font-weight: bold;
+    text-decoration: none;
+}
+.bottom-link a:hover {
+    text-decoration: underline;
+}

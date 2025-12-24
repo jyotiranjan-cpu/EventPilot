@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPilot - Complete Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='auth.css') }}">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div id="snackbar" class="{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="auth-container" style="max-width: 600px;"> <!-- Slightly wider for profile form -->
+        
+        <div class="auth-header">
+            <h2>Complete Profile</h2>
+            <p style="color: #666;">Finish setting up your account</p>
+        </div>
+
+        <!-- REGISTER FORM -->
+        <!-- 'novalidate' stops browser default popup, lets our JS handle it -->
+        <form id="register-form" class="auth-form" action="{{ url_for('registration') }}" method="POST" novalidate>
+            
+            <!-- 1. Role Selection -->
+            <div class="role-selection">
+                <label>I want to:</label>
+                <div class="radio-group">
+                    <label class="radio-label">
+                        <input type="radio" name="role" value="user" checked onchange="toggleVendorFields()">
+                        <span>Plan an Event</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="role" value="vendor" onchange="toggleVendorFields()">
+                        <span>Offer Services (Vendor)</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 2. Read-Only Verified Email -->
+            <div class="input-group">
+                <label>Email Address <span style="color:green; font-size:0.8rem;">(Verified)</span></label>
+                <input type="email" name="email" value="{{ email }}" readonly 
+                       style="background-color: #e9ecef; color: #555; cursor: not-allowed; border-color: #2ecc71;">
+            </div>
+
+            <!-- 3. Name Fields -->
+            <div class="row">
+                <div class="input-group half">
+                    <label>First Name</label>
+                    <input type="text" id="firstname" name="firstname">
+                    <small class="error-msg">Name is required</small>
+                </div>
+                <div class="input-group half">
+                    <label>Last Name</label>
+                    <input type="text" id="lastname" name="lastname">
+                    <small class="error-msg">Last name is required</small>
+                </div>
+            </div>
+
+            <!-- 4. Phone -->
+            <div class="input-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phone" name="phone_no" placeholder="9876543210">
+                <small class="error-msg">Enter a valid 10-digit phone number</small>
+            </div>
+
+            <!-- 5. Address -->
+            <div class="row">
+                <div class="input-group half">
+                    <label>State</label>
+                    <input type="text" id="state" name="state">
+                </div>
+                <div class="input-group half">
+                    <label>City</label>
+                    <input type="text" id="city" name="city">
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <label>Address</label>
+                <textarea name="address" rows="2"></textarea>
+            </div>
+
+            <!-- 6. VENDOR SPECIFIC FIELDS (Hidden by default) -->
+            <div id="vendor-fields" class="vendor-section hidden-section" style="display: none;">
+                <h4 class="divider"><span>Business Details</span></h4>
+                
+                <div class="input-group">
+                    <label>Business Name</label>
+                    <input type="text" id="business_name" name="business_name">
+                    <small class="error-msg">Business Name is required</small>
+                </div>
+
+                <div class="row">
+                    <div class="input-group half">
+                        <label>Category</label>
+                        <select name="category" id="category">
+                            <option value="">Select Category</option>
+                            <option value="Catering">Catering</option>
+                            <option value="Photography">Photography</option>
+                            <option value="Decoration">Decoration</option>
+                            <option value="DJ/Music">DJ/Music</option>
+                            <option value="Venue">Venue</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. Passwords -->
+            <!-- Create Password -->
+            <div class="input-group">
+                <label>Create Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="password_hash">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+                </div>
+                <small class="error-msg">At least 6 chars, 1 number</small>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="input-group">
+                <label>Confirm Password</label>
+                <div class="password-container">
+                    <input type="password" id="confirm_password">
+                    <i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
+                </div>
+                <small class="error-msg">Passwords do not match</small>
+            </div>
+
+            <!-- Submit Button (Disabled until valid) -->
+            <button type="submit" class="submit-btn" id="reg-btn" disabled>Complete Registration</button>
+        </form>
+
+        <div style="text-align: center; margin-top: 20px; font-size: 0.9rem;">
+             Already have an account? <a href="{{ url_for('login') }}" style="color: #FF6B00; font-weight: bold;">Login here</a>
+        </div>
+    </div>
+
+    <!-- Validation Logic -->
+    <script src="{{ url_for('static', filename='auth.js') }}"></script>
+</body>
+</html>

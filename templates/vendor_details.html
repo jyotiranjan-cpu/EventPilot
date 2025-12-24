@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ vendor.business_name }} - EventPilot</title>
+    <!-- Tailwind CSS (via CDN for simplicity, ensure you have it configured) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Custom Font */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- 1. HEADER SECTION (Dark Blue Background) -->
+    <div class="bg-[#1F2937] text-white pt-24 pb-32"> <!-- Large padding bottom to create overlap effect -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="{{ url_for('homepage') }}" class="text-gray-400 hover:text-white mb-6 inline-block">
+                <i class="fas fa-arrow-left"></i> Back to Search
+            </a>
+            
+            <div class="flex items-center gap-6">
+                <!-- Vendor Avatar/Logo -->
+                <div class="w-24 h-24 bg-[#FF6B00] rounded-xl flex items-center justify-center text-4xl font-bold shadow-lg">
+                    {{ vendor.business_name[:2].upper() }}
+                </div>
+                
+                <!-- Vendor Info -->
+                <div>
+                    <span class="bg-[#FF6B00] text-white text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">
+                        {{ vendor.category }}
+                    </span>
+                    <h1 class="text-4xl font-bold mt-2">{{ vendor.business_name }}</h1>
+                    <p class="text-gray-400 mt-1 flex items-center gap-2">
+                        <i class="fas fa-map-marker-alt"></i> {{ vendor.city }}
+                        <span class="flex items-center text-yellow-400 gap-1 ml-4">
+                            <i class="fas fa-star"></i> 4.8 (Verified)
+                        </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN CONTENT GRID (Overlapping the Header) -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-20 mb-20"> <!-- Negative margin pulls it up -->
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- LEFT COLUMN (2/3 Width) -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- About Card -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">About the Vendor</h2>
+                    <p class="text-gray-600 leading-relaxed">
+                        {{ vendor.description or "No description provided yet." }}
+                    </p>
+                </div>
+
+                <!-- Services Card -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Services & Highlights</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <i class="fas fa-check-circle text-green-500 text-xl"></i> 
+                            <span>Professional {{ vendor.category }}</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <i class="fas fa-check-circle text-green-500 text-xl"></i> 
+                            <span>Verified Business</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <i class="fas fa-check-circle text-green-500 text-xl"></i> 
+                            <span>Available for Events</span>
+                        </div>
+                        <div class="flex items-center gap-3 text-gray-700">
+                            <i class="fas fa-check-circle text-green-500 text-xl"></i> 
+                            <span>Custom Packages</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Portfolio Placeholder -->
+                <div class="bg-white rounded-xl shadow-md p-8">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-6">Portfolio</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="h-32 bg-gray-200 rounded-lg"></div>
+                        <div class="h-32 bg-gray-200 rounded-lg"></div>
+                        <div class="h-32 bg-gray-200 rounded-lg"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- RIGHT COLUMN / SIDEBAR (1/3 Width) -->
+            <div class="lg:col-span-1">
+                
+                <!-- STICKY SIDEBAR CARD -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6 sticky top-6">
+                    
+                    <!-- Price -->
+                    <div class="mb-6">
+                        <h3 class="text-3xl font-bold text-[#FF6B00]">
+                            ₹{{ vendor.starting_price }} 
+                            <span class="text-sm font-normal text-gray-500">/ event</span>
+                        </h3>
+                        <p class="text-sm text-gray-500 mt-2">
+                            Fill in your requirements to get a custom price from {{ vendor.business_name }}.
+                        </p>
+                    </div>
+
+                    <hr class="border-gray-100 my-4">
+
+                    <!-- Action Area -->
+                    <div>
+                        <h4 class="font-semibold text-gray-800 mb-3">Request Free Quote</h4>
+                        
+                        <div class="flex items-center gap-2 text-sm text-gray-600 mb-5">
+                            <i class="fas fa-check-circle text-green-500"></i>
+                            <span>No payment required today</span>
+                        </div>
+
+                        <!-- Button -->
+                        <a href="{{ url_for('request_booking', vendor_id=vendor.id) }}" 
+                           class="block w-full text-center bg-[#FF6B00] hover:bg-[#e66000] text-white font-bold py-3.5 rounded-lg shadow-md transition duration-200">
+                            Contact Vendor
+                        </a>
+
+                        <p class="text-xs text-center text-gray-400 mt-4">
+                            Usually responds within 24 hours
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

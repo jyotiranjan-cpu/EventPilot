@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventPilot - Plan Your Perfect Event</title>
+    <!-- Link to External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='homepage.css') }}">
+    <!-- Note: If not using Flask yet, just use href="style.css" -->
+</head>
+<body>
+
+    <!-- Navigation -->
+<nav id="navbar">
+    <div class="container nav-container">
+        <span class="logo">Event<span class="highlight">Pilot</span></span>
+        
+        <ul class="nav-links">
+            <!-- CHECK IF ADMIN -->
+            {% if session.get('role') == 'admin' %}
+                <!-- Special Admin Button -->
+                <li>
+                    <a href="{{ url_for('admin_dashboard') }}" class="btn-primary" style="background-color: #1F2937;">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav_logout"><a href="/logout" class="btn-outline">Logout</a></li>
+            {% elif session.get('role')=='vendor' %}
+                <li>
+                    <a href="{{ url_for('vendor_dashboard') }}" class="btn-primary" style="background-color: #1F2937;">
+                        <i class="fas fa-chart-line"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav_logout"><a href="/logout" class="btn-outline">Logout</a></li>
+            <!-- CHECK IF USER OR VENDOR -->
+            {% elif session.get('id') %}
+                <li class="nav_profile"><a href="/profile">Profile</a></li>
+                <li class="nav_logout"><a href="/logout" class="btn-outline">Logout</a></li>
+
+            <!-- IF NOT LOGGED IN -->
+            {% else %}
+                <li class="nav_login"><a href="/login">Login</a></li>
+                <li class="nav_register"><a href="/email_verification" class="btn-primary">Sign Up</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+    <!-- Hero Section (Search) -->
+    <header class="hero">
+        <div class="hero-overlay"></div>
+        <div class="hero-content hidden-element">
+            <h1>Plan Your Dream Event</h1>
+            <p>Find and book the best local vendors for weddings, parties, and corporate events.</p>
+            
+            <!-- Inside homepage.html -->
+            <form action="{{ url_for('vendor_list') }}" method="GET" class="search-bar">
+                <div class="input-group">
+                    <label>I'm looking for...</label>
+                    <select name="category">
+                        <option value="">Select Vendor Type</option>
+                        <option value="Catering">Catering</option>
+                        <option value="Photography">Photography</option>
+                        <option value="Decoration">Decoration</option>
+                        <option value="DJ/Music">DJ/Music</option>
+                        <option value="Venue">Venue</option>
+                    </select>
+                </div>
+                <div class="input-group border-left">
+                    <label>Location</label>
+                    <!-- 'city' matches the column in your DB -->
+                    <input type="text" name="city" placeholder="City or Zip">
+                </div>
+                <button type="submit" class="search-btn">Search</button>
+            </form>
+        </div>
+    </header>
+
+    <!-- Categories Section -->
+    <section class="section categories">
+        <div class="container">
+            <h2 class="section-title hidden-element">Browse by Category</h2>
+            <div class="category-grid">
+                <!-- Card 1 -->
+                <div class="cat-card hidden-element">
+                    <div class="icon">📸</div>
+                    <h3>Photography</h3>
+                    <p>Capture the moments</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="cat-card hidden-element">
+                    <div class="icon">🍽️</div>
+                    <h3>Catering</h3>
+                    <p>Delicious menus</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="cat-card hidden-element">
+                    <div class="icon">🎵</div>
+                    <h3>Music & DJ</h3>
+                    <p>Set the vibe</p>
+                </div>
+                <!-- Card 4 -->
+                <div class="cat-card hidden-element">
+                    <div class="icon">💐</div>
+                    <h3>Decor</h3>
+                    <p>Beautiful themes</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works / Trust Section -->
+    <section class="section trust-section">
+        <div class="container">
+            <div class="trust-content hidden-element">
+                <h2>Why use EventPilot?</h2>
+                <div class="trust-grid">
+                    <div class="trust-item">
+                        <h3>Verified Vendors</h3>
+                        <p>We check IDs and past work so you don't have to.</p>
+                    </div>
+                    <div class="trust-item">
+                        <h3>Transparent Pricing</h3>
+                        <p>Compare quotes side-by-side with no hidden fees.</p>
+                    </div>
+                    <div class="trust-item">
+                        <h3>Secure Payments</h3>
+                        <p>Your money is held safely until the booking is confirmed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Javascript for Animation -->
+    <script>
+        // Simple Intersection Observer for "Vanishing/Fade In" effect
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('show');
+                }
+            });
+        });
+
+        const hiddenElements = document.querySelectorAll('.hidden-element');
+        hiddenElements.forEach((el) => observer.observe(el));
+    </script>
+</body>
+</html>

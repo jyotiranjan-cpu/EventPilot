@@ -1,0 +1,207 @@
+/* --- VARIABLES (If not already defined) --- */
+:root {
+    --primary: #FF6B00;
+    --dark: #1F2937;
+    --light-bg: #F3F4F6;
+    --white: #ffffff;
+    --border: #e5e7eb;
+    --text-gray: #6B7280;
+}
+
+/* --- INVOICE PAGE LAYOUT --- */
+.invoice-body {
+    background-color: var(--light-bg);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--dark);
+    min-height: 100vh;
+    padding: 40px 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.invoice-container {
+    width: 100%;
+    max-width: 800px;
+}
+
+/* Navigation */
+.back-nav {
+    margin-bottom: 20px;
+}
+
+.btn-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--dark);
+    color: var(--white);
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s;
+}
+
+.btn-back:hover {
+    background-color: #374151;
+}
+
+/* --- INVOICE CARD --- */
+.invoice-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    padding: 40px;
+    border: 1px solid var(--border);
+}
+
+/* Header */
+.invoice-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.invoice-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    color: var(--dark);
+}
+
+.header-right {
+    text-align: right;
+}
+
+.header-right .label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.header-right time {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+/* Status Badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-badge.completed { background-color: #dcfce7; color: #15803d; }
+.status-badge.pending { background-color: #fff7ed; color: #c2410c; }
+.status-badge.cancelled { background-color: #fee2e2; color: #b91c1c; }
+
+.divider {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 20px 0 30px 0;
+}
+
+/* --- DETAILS GRID --- */
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.info-box h3 {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    color: var(--text-gray);
+    margin-bottom: 15px;
+    border-bottom: 2px solid var(--primary);
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+address {
+    font-style: normal;
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+address strong {
+    font-size: 1.1rem;
+    color: var(--dark);
+    display: block;
+    margin-bottom: 4px;
+}
+
+address a {
+    color: var(--primary);
+    text-decoration: none;
+}
+
+address a:hover {
+    text-decoration: underline;
+}
+
+/* --- FINANCIAL TABLE --- */
+.financial-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.financial-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.financial-table th {
+    background-color: #f9fafb;
+    text-align: left;
+    padding: 12px;
+    font-weight: 600;
+    color: var(--text-gray);
+    border-bottom: 2px solid var(--border);
+}
+
+.financial-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid var(--border);
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* Total Row */
+.financial-table tfoot .total-row td {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--primary);
+    border-top: 2px solid var(--dark);
+    border-bottom: none;
+    background-color: #fff7ed; /* Light orange tint */
+}
+
+/* --- FOOTER --- */
+.invoice-footer {
+    text-align: center;
+    color: var(--text-gray);
+    font-size: 0.85rem;
+    margin-top: 40px;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    .details-grid {
+        grid-template-columns: 1fr; /* Stack columns on mobile */
+    }
+    
+    .invoice-card {
+        padding: 20px;
+    }
+}

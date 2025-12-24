@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Invoice - EventPilot</title>
+    <!-- Link to the External CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_view_booking.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="invoice-body">
+
+    <!-- Main Content Wrapper -->
+    <main class="invoice-container">
+        
+        <!-- Navigation -->
+        <nav class="back-nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </nav>
+
+        <!-- Invoice Article -->
+        <article class="invoice-card">
+            
+            <!-- Invoice Header -->
+            <header class="invoice-header">
+                <div class="header-left">
+                    <h1>Booking #{{ booking.id }}</h1>
+                    <!-- Status Badge -->
+                    <span class="status-badge {{ booking.status|lower }}">{{ booking.status|upper }}</span>
+                </div>
+                <div class="header-right">
+                    <span class="label">Event Date</span>
+                    <time datetime="{{ booking.event_date }}">{{ booking.event_date }}</time>
+                </div>
+            </header>
+
+            <hr class="divider">
+
+            <!-- Contact Details Grid -->
+            <section class="details-grid">
+                
+                <!-- Vendor Section -->
+                <section class="info-box vendor-box">
+                    <h3><i class="fas fa-store"></i> Vendor Details</h3>
+                    <address>
+                        <strong>{{ booking.business_name }}</strong><br>
+                        <span class="contact-person">{{ booking.v_fname }} {{ booking.v_lname }}</span><br>
+                        <a href="tel:{{ booking.v_phone }}">{{ booking.v_phone }}</a><br>
+                        <a href="mailto:{{ booking.v_email }}">{{ booking.v_email }}</a><br>
+                        <span class="location">{{ booking.v_address }}</span>
+                    </address>
+                </section>
+                
+                <!-- Client Section -->
+                <section class="info-box client-box">
+                    <h3><i class="fas fa-user"></i> Client Details</h3>
+                    <address>
+                        <strong>{{ booking.u_fname }} {{ booking.u_lname }}</strong><br>
+                        <span class="contact-person">Organizer</span><br>
+                        <a href="tel:{{ booking.u_phone }}">{{ booking.u_phone }}</a><br>
+                        <a href="mailto:{{ booking.u_email }}">{{ booking.u_email }}</a><br>
+                        <span class="location">{{ booking.u_city }}</span>
+                    </address>
+                </section>
+
+            </section>
+
+            <!-- Financials Table -->
+            <section class="financial-section">
+                <h3>Payment Summary</h3>
+                <table class="financial-table">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th class="text-right">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Agreed Service Cost</td>
+                            <td class="text-right">₹{{ booking.final_price }}</td>
+                        </tr>
+                        <!-- Optional: Add Tax or Fees rows here if needed -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td>Total Paid</td>
+                            <td class="text-right">₹{{ booking.final_price }}</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </section>
+
+            <!-- Footer Notes -->
+            <footer class="invoice-footer">
+                <p>Thank you for using EventPilot. This is a system-generated invoice.</p>
+            </footer>
+
+        </article>
+    </main>
+
+</body>
+</html>

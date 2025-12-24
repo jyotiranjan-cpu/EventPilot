@@ -1,0 +1,56 @@
+:root {
+    --primary: #FF6B00;
+    --dark: #1F2937;
+    --light-bg: #F3F4F6;
+    --white: #ffffff;
+}
+
+body { font-family: 'Segoe UI', sans-serif; background: var(--light-bg); color: var(--dark); margin: 0; padding: 20px; }
+
+.container { max-width: 1000px; margin: 0 auto; }
+
+.back-link { text-decoration: none; color: #666; font-weight: 500; display: inline-block; margin-bottom: 20px; }
+.back-link:hover { color: var(--primary); }
+
+/* Header */
+.page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.page-header h1 { margin: 0; font-size: 1.8rem; }
+.page-header p { margin: 5px 0 0; color: #666; font-size: 0.9rem; }
+
+/* Status Badge */
+.status-badge { padding: 8px 16px; border-radius: 20px; font-weight: bold; font-size: 0.9rem; }
+.status-badge.pending { background: #fff7ed; color: #c2410c; border: 1px solid #ffedd5; }
+.status-badge.accepted { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+.status-badge.rejected { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+/* Grid */
+.grid-layout { display: grid; grid-template-columns: 1fr 1.5fr; gap: 20px; }
+@media (max-width: 768px) { .grid-layout { grid-template-columns: 1fr; } }
+
+/* Cards */
+.card { background: var(--white); padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.card h3 { margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 20px; color: var(--primary); }
+
+/* Info Rows */
+.info-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
+.label { font-weight: 600; color: #555; }
+.value { font-weight: 500; color: var(--dark); text-align: right; }
+
+/* Requirements */
+.requirements-box { background: #fffbeb; padding: 15px; border-radius: 8px; border: 1px solid #fcd34d; margin-bottom: 20px; }
+
+/* Form */
+.form-group { margin-bottom: 20px; }
+.form-group label { display: block; font-weight: bold; margin-bottom: 8px; }
+.form-group input { width: 100%; padding: 12px; border: 2px solid #ddd; border-radius: 8px; font-size: 1.1rem; box-sizing: border-box; }
+.form-group input:focus { border-color: var(--primary); outline: none; }
+
+/* Buttons */
+.btn-group { display: flex; gap: 15px; }
+.btn-accept, .btn-reject { flex: 1; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 1rem; transition: 0.2s; }
+
+.btn-accept { background: #10b981; color: white; }
+.btn-accept:hover { background: #059669; }
+
+.btn-reject { background: #ef4444; color: white; }
+.btn-reject:hover { background: #dc2626; }

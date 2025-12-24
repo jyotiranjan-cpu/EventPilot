@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Details - EventPilot Admin</title>
+    <!-- Main Admin CSS (for sidebar/layout) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin.css') }}">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='admin_view_vendor.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>  
+<body class="detail-body">
+
+    <main class="detail-container">
+        
+        <!-- Navigation -->
+        <nav class="back-nav">
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </nav>
+
+        <!-- SECTION 1: Vendor Profile -->
+        <section class="detail-card profile-section">
+            <header class="card-header">
+                <div class="profile-title">
+                    <h1 class="highlight-text">{{ vendor.business_name }}</h1>
+                    <span class="category-badge"><i class="fas fa-tag"></i> {{ vendor.category }}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-number">{{ completed_count }}</span>
+                    <span class="stat-label">Completed Jobs</span>
+                </div>
+            </header>
+            
+            <div class="info-grid">
+                <article class="info-item">
+                    <h3>Owner Name</h3>
+                    <p>{{ vendor.firstname }} {{ vendor.lastname }}</p>
+                </article>
+                <article class="info-item">
+                    <h3>Starting Price</h3>
+                    <p class="price-text">₹{{ vendor.starting_price }}</p>
+                </article>
+                <article class="info-item">
+                    <h3>Email</h3>
+                    <p><a href="mailto:{{ vendor.email }}">{{ vendor.email }}</a></p>
+                </article>
+                <article class="info-item">
+                    <h3>Phone</h3>
+                    <p>{{ vendor.phone_no }}</p>
+                </article>
+                <article class="info-item full-width">
+                    <h3>Description</h3>
+                    <p class="desc-text">{{ vendor.description }}</p>
+                </article>
+                <article class="info-item full-width">
+                    <h3>Address</h3>
+                    <p>{{ vendor.address }}, {{ vendor.city }}</p>
+                </article>
+                <article class="info-item">
+                    <h3>Verification Status</h3>
+                    <span class="status-pill {{ vendor.verification_status }}">
+                        {{ vendor.verification_status | capitalize }}
+                    </span>
+                </article>
+            </div>
+        </section>
+        
+        <!-- SECTION 2: Job History -->
+        <section class="detail-card history-section">
+            <header class="section-header">
+                <h2><i class="fas fa-history"></i> Job History</h2>
+            </header>
+            
+            <div class="table-wrapper">
+                <table class="history-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Client Name</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in history %}
+                        <tr>
+                            <td>{{ h.event_date }}</td>
+                            <td><strong>{{ h.firstname }} {{ h.lastname }}</strong></td>
+                            <!-- Using user_request_price based on DB update, fallback to total_price if old data -->
+                            <td>₹{{ h.final_price if h.final_price else h.user_request_price }}</td>
+                            <td><span class="status-tag {{ h.status }}">{{ h.status }}</span></td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No job history available.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Booking #{{ booking.id }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='view_booking.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- Back Button -->
+        <a href="{{ url_for('vendor_dashboard') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <!-- Header -->
+        <header class="page-header">
+            <div>
+                <h1>Booking Request #{{ booking.id }}</h1>
+                <p>Received on {{ booking.created_at }}</p>
+            </div>
+            <div class="status-badge {{ booking.status }}">
+                {{ booking.status|upper }}
+            </div>
+        </header>
+
+        <div class="grid-layout">
+            
+            <!-- Left Column: Event Details -->
+            <div class="card details-card">
+                <h3><i class="fas fa-calendar-alt"></i> Event Details</h3>
+                
+                <div class="info-row">
+                    <span class="label">Event Type:</span>
+                    <span class="value">{{ booking.event_type }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Date:</span>
+                    <span class="value">{{ booking.event_date }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Time:</span>
+                    <span class="value">{{ booking.start_time }} to {{ booking.end_time }}</span>
+                </div>
+                
+                <hr>
+                
+                <h3><i class="fas fa-user"></i> Client Details</h3>
+                <div class="info-row">
+                    <span class="label">Name:</span>
+                    <span class="value">{{ booking.firstname }} {{ booking.lastname }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Phone:</span>
+                    <span class="value">{{ booking.phone_no }}</span>
+                </div>
+                <div class="info-row">
+                    <span class="label">Onsite Contact:</span>
+                    <span class="value">{{ booking.onsite_contact }}</span>
+                </div>
+            </div>
+
+            <!-- Right Column: Requirements & Action -->
+            <div class="card action-card">
+                
+                <!-- Requirements Section -->
+                <div class="requirements-box">
+                    <h3>Specific Requirements</h3>
+                    <p>{{ booking.specific_requirements or "No specific notes provided." }}</p>
+                </div>
+
+                <!-- Negotiation / Action Section -->
+                {% if booking.status == 'pending' %}
+                <div class="action-form">
+                    <h3>Take Action</h3>
+                    <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">
+                        The client proposed a budget of <strong>₹{{ booking.user_request_price }}</strong>.
+                        Enter your final agreed price below.
+                    </p>
+
+                    <form action="{{ url_for('process_booking_action', booking_id=booking.id) }}" method="POST">
+                        
+                        <div class="form-group">
+                            <label>Final Agreed Price (₹)</label>
+                            <!-- Pre-filled with user request, but vendor can change it -->
+                            <input type="number" name="final_price" value="{{ booking.user_request_price }}" required>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="submit" name="action" value="accept" class="btn-accept">
+                                <i class="fas fa-check"></i> Accept Booking
+                            </button>
+                            
+                            <button type="submit" name="action" value="reject" class="btn-reject" formnovalidate>
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                {% else %}
+                <!-- If already accepted/rejected -->
+                <div class="action-form" style="text-align: center;">
+                    <h3>Booking Closed</h3>
+                    <p>This booking has been <strong>{{ booking.status }}</strong>.</p>
+                    <p>Final Price: <strong>₹{{ booking.final_price if booking.final_price else '-' }}</strong></p>
+                </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
