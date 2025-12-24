@@ -11,13 +11,13 @@ import uuid
 
 
 app = Flask(__name__)
-app.secret_key = "Jyoti2005"
+app.secret_key = "Key"
 
 # --- CONFIGURATION ---
 SMTP_HOST = "smtp.gmail.com"
 SMTP_PORT = 587
 SMTP_USER = "jyotiranjann135@gmail.com"
-SMTP_PASS = "lofe lsnz byqs ndly"
+SMTP_PASS = "app Password"
 
 # --- DATABASE CONNECTION ---
 def connection():
@@ -27,7 +27,7 @@ def connection():
         password="Jyoti2005", # <--- UPDATE THIS TO YOUR DB PASSWORD
         database="EventPilot",
         cursorclass=pymysql.cursors.DictCursor,
-        autocommit=True  # <--- FIXED: Ensures data is actually saved
+        autocommit=True  
     )
 
 # --- EMAIL HELPER ---
@@ -39,10 +39,7 @@ def send_email_smtp(to_email: str, subject: str, body: str):
         server.starttls()
         server.login(SMTP_USER, SMTP_PASS)
         
-        # ---------------------------------------------------------
-        # THE FIX: "html" is the second argument here.
-        # If this is missing or set to "plain", you will see raw tags.
-        # ---------------------------------------------------------
+
         msg = MIMEText(body, "html", _charset="utf-8")
         
         msg["Subject"] = subject
@@ -155,7 +152,7 @@ def email_verification():
         conn = connection()
         try:
             with conn.cursor() as cursor:
-                # FIXED: Check if email already exists in REAL tables
+             
                 #checkng both user_data and vendor_data tables
                 cursor.execute("SELECT id FROM user_data WHERE email=%s UNION SELECT id FROM vendor_data WHERE email=%s", (user_email, user_email))
                 existing = cursor.fetchone()
@@ -201,7 +198,7 @@ def otp_verification():
             
             if row and str(row.get("otp_code")) == str(otp_input) and row.get("expires_at") > datetime.now():
                 
-                # FIXED: Insert into temp_registrations to get an ID
+
                 # Clean up old attempts first
                 cursor.execute("DELETE FROM temp_registrations WHERE email=%s", (email,))
                 cursor.execute("INSERT INTO temp_registrations (email) VALUES (%s)", (email,))
@@ -376,7 +373,6 @@ def logout():
     session.clear()
     return redirect(url_for('homepage'))
 
-# ---------------- ADMIN DASHBOARD ----------------
 # ---------------- ADMIN DASHBOARD ----------------
 @app.route('/admin/dashboard')
 def admin_dashboard():
